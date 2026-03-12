@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediaIQ — Contact CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181b22;
+    --border: #1f2330;
+    --border2: #252a38;
+    --accent: #5b6ef5;
+    --accent2: #7c8fff;
+    --accent-glow: rgba(91,110,245,0.15);
+    --green: #22c97a;
+    --yellow: #f5c842;
+    --pink: #f55b8e;
+    --cyan: #3dd6f5;
+    --orange: #f5874a;
+    --text: #e8eaf2;
+    --text2: #8b91a8;
+    --text3: #555c73;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── SIDEBAR ── */
+  .layout { display: flex; height: 100vh; overflow: hidden; }
+
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .sidebar-logo {
+    padding: 22px 20px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    box-shadow: 0 0 20px rgba(91,110,245,0.4);
+  }
+
+  .logo-text { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+  .logo-text span { color: var(--accent2); }
+
+  .sidebar-section { padding: 14px 12px 6px; }
+  .sidebar-label {
+    font-size: 9px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--text3);
+    padding: 0 8px; margin-bottom: 6px;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 8px;
+    font-size: 13px; font-weight: 500; color: var(--text2);
+    cursor: pointer; transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active {
+    background: var(--accent-glow);
+    color: var(--accent2);
+    border: 1px solid rgba(91,110,245,0.3);
+  }
+  .nav-item svg { opacity: 0.7; }
+  .nav-item.active svg { opacity: 1; }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent);
+    color: white;
+    font-size: 9px; font-weight: 700;
+    padding: 2px 6px; border-radius: 20px;
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .user-pill {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px;
+    background: var(--surface2); cursor: pointer;
+  }
+
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+  }
+
+  .user-info .name { font-size: 12px; font-weight: 600; }
+  .user-info .role { font-size: 10px; color: var(--text3); }
+
+  /* ── MAIN ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* TOPBAR */
+  .topbar {
+    height: 60px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 24px;
+  }
+
+  .topbar-title { font-size: 17px; font-weight: 700; letter-spacing: -0.4px; }
+  .topbar-sub { font-size: 12px; color: var(--text3); margin-left: 4px; }
+
+  .topbar-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+
+  .search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px; padding: 7px 14px;
+    width: 240px; transition: border 0.2s;
+  }
+  .search-box:focus-within { border-color: var(--accent); }
+  .search-box input {
+    background: none; border: none; outline: none;
+    font-family: inherit; font-size: 13px; color: var(--text);
+    width: 100%;
+  }
+  .search-box input::placeholder { color: var(--text3); }
+
+  .btn {
+    padding: 8px 16px; border-radius: 8px;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none; transition: all 0.15s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--accent2); box-shadow: 0 0 16px rgba(91,110,245,0.4); }
+  .btn-ghost {
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--border); }
+
+  /* FILTERS BAR */
+  .filters-bar {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface);
+    flex-wrap: wrap;
+  }
+
+  .filter-label { font-size: 12px; color: var(--text3); font-weight: 500; margin-right: 4px; }
+
+  .filter-chip {
+    padding: 5px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border2);
+    background: var(--surface2); color: var(--text2);
+    transition: all 0.15s;
+  }
+  .filter-chip:hover { border-color: var(--accent); color: var(--accent2); }
+  .filter-chip.active {
+    background: var(--accent-glow);
+    border-color: var(--accent);
+    color: var(--accent2);
+  }
+
+  .filter-sep { width: 1px; height: 20px; background: var(--border2); margin: 0 4px; }
+
+  /* STATS ROW */
+  .stats-row {
+    padding: 16px 24px;
+    display: flex; gap: 16px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 14px;
+    flex: 1; min-width: 0;
+  }
+
+  .stat-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+
+  .stat-num { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .stat-lbl { font-size: 11px; color: var(--text3); font-weight: 500; margin-top: 1px; }
+
+  /* CONTENT AREA */
+  .content {
+    flex: 1; overflow-y: auto;
+    padding: 0 24px 24px;
+  }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .table-header-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table-header-row h3 { font-size: 14px; font-weight: 600; }
+  .contact-count { font-size: 12px; color: var(--text3); margin-left: 8px; }
+
+  .view-toggle { display: flex; gap: 4px; }
+  .view-btn {
+    width: 32px; height: 32px; border-radius: 6px;
+    background: none; border: 1px solid var(--border2);
+    color: var(--text3); cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .view-btn.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent2); }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    text-align: left; padding: 10px 16px;
+    font-size: 10px; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--text3);
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer; user-select: none;
+  }
+  thead th:hover { color: var(--text2); }
+  thead th .sort-arrow { opacity: 0.4; margin-left: 4px; }
+  thead th.sorted .sort-arrow { opacity: 1; color: var(--accent2); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody tr.selected { background: var(--accent-glow); }
+
+  td {
+    padding: 12px 16px;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+
+  .contact-cell { display: flex; align-items: center; gap: 12px; }
+
+  .contact-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+    border: 2px solid transparent;
+  }
+
+  .contact-name { font-weight: 600; font-size: 13px; }
+  .contact-title { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  .pub-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+    border: 1px solid;
+  }
+
+  .pub-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+  .angle-tag {
+    display: inline-flex; align-items: center;
+    padding: 3px 8px; border-radius: 4px;
+    font-size: 10px; font-family: 'JetBrains Mono', monospace;
+    font-weight: 500; margin: 2px 2px 2px 0;
+    background: rgba(255,255,255,0.05);
+    color: var(--text2); border: 1px solid var(--border2);
+  }
+
+  .email-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--text3);
+    text-decoration: none; transition: color 0.15s;
+  }
+  .email-link:hover { color: var(--accent2); text-decoration: underline; }
+
+  .status-dot {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 500;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  .action-btns { display: flex; gap: 6px; opacity: 0; transition: opacity 0.15s; }
+  tbody tr:hover .action-btns { opacity: 1; }
+  .action-btn {
+    width: 28px; height: 28px; border-radius: 6px;
+    border: 1px solid var(--border2); background: var(--surface);
+    color: var(--text3); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; font-size: 12px;
+  }
+  .action-btn:hover { border-color: var(--accent); color: var(--accent2); background: var(--accent-glow); }
+
+  /* MODAL / SLIDE-IN PANEL */
+  .panel-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    z-index: 100; display: none; align-items: stretch; justify-content: flex-end;
+  }
+  .panel-overlay.open { display: flex; }
+
+  .panel {
+    width: 420px;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    animation: slideIn 0.25s ease;
+    overflow-y: auto;
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(40px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  .panel-top {
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+
+  .panel-close {
+    background: none; border: none; cursor: pointer;
+    color: var(--text3); font-size: 18px; padding: 4px;
+    border-radius: 6px; transition: all 0.15s;
+  }
+  .panel-close:hover { color: var(--text); background: var(--surface2); }
+
+  .panel-avatar {
+    width: 60px; height: 60px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 700; margin-bottom: 12px;
+  }
+
+  .panel-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+  .panel-role { font-size: 13px; color: var(--text2); margin-top: 3px; }
+  .panel-pub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  .panel-section { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+  .panel-section-title {
+    font-size: 10px; font-weight: 600; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--text3); margin-bottom: 12px;
+  }
+
+  .info-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+  .info-label { font-size: 11px; color: var(--text3); min-width: 80px; padding-top: 1px; }
+  .info-value { font-size: 13px; font-weight: 500; }
+
+  .panel-actions { padding: 16px 20px; display: flex; gap: 10px; }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center; padding: 60px 24px;
+    color: var(--text3);
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+  .empty-state p { font-size: 14px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  /* Checkbox */
+  .cb { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+
+  /* Tooltip */
+  [title] { position: relative; }
+
+  /* Notification toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 10px; padding: 12px 16px;
+    font-size: 13px; display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s; z-index: 999;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* Grid view */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px; padding: 20px;
+  }
+
+  .contact-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px;
+    cursor: pointer; transition: all 0.15s;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .contact-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 24px rgba(91,110,245,0.15); }
+  .card-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
+  .card-name { font-size: 14px; font-weight: 700; }
+  .card-title { font-size: 11px; color: var(--text3); }
+  .card-email { font-size: 10px; font-family: 'JetBrains Mono'; color: var(--text3); margin-top: 4px; word-break: break-all; }
+
+  #card-view { display: none; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">📡</div>
+      <div class="logo-text">Media<span>IQ</span></div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Workspace</div>
+      <div class="nav-item active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Contacts
+        <span class="nav-badge">35</span>
+      </div>
+      <div class="nav-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.36 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/></svg>
+        Outreach
+      </div>
+      <div class="nav-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Campaigns
+      </div>
+      <div class="nav-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Analytics
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Lists</div>
+      <div class="nav-item">
+        <span style="font-size:10px;width:15px;height:15px;background:#22c97a22;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#22c97a">●</span>
+        Investing Beat
+      </div>
+      <div class="nav-item">
+        <span style="font-size:10px;width:15px;height:15px;background:#f5c84222;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#f5c842">●</span>
+        AI / Fintech
+      </div>
+      <div class="nav-item">
+        <span style="font-size:10px;width:15px;height:15px;background:#5b6ef522;border-radius:3px;display:flex;align-items:center;justify-content:center;color:#5b6ef5">●</span>
+        Wealth & Retail
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div class="avatar">CQ</div>
+        <div class="user-info">
+          <div class="name">Chris Q.</div>
+          <div class="role">Admin · CreatorIQ</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <div class="main">
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div>
+        <span class="topbar-title">Media Contacts</span>
+        <span class="topbar-sub">/ All</span>
+      </div>
+      <div class="topbar-actions">
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555c73" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="searchInput" placeholder="Search contacts…" oninput="filterContacts()">
+        </div>
+        <button class="btn btn-ghost" onclick="showToast('📤 Export started')">Export</button>
+        <button class="btn btn-primary" onclick="showToast('➕ Add contact coming soon')">+ Add Contact</button>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters-bar">
+      <span class="filter-label">Publication:</span>
+      <div class="filter-chip active" onclick="setFilter('pub','all',this)">All</div>
+      <div class="filter-chip" onclick="setFilter('pub','bloomberg',this)">Bloomberg</div>
+      <div class="filter-chip" onclick="setFilter('pub','wsj',this)">WSJ</div>
+      <div class="filter-chip" onclick="setFilter('pub','cnbc',this)">CNBC</div>
+      <div class="filter-chip" onclick="setFilter('pub','bi',this)">Business Insider</div>
+
+      <div class="filter-sep"></div>
+
+      <span class="filter-label">Beat:</span>
+      <div class="filter-chip active" onclick="setFilter('beat','all',this)">All</div>
+      <div class="filter-chip" onclick="setFilter('beat','ai',this)">AI / Fintech</div>
+      <div class="filter-chip" onclick="setFilter('beat','investing',this)">Investing</div>
+      <div class="filter-chip" onclick="setFilter('beat','wealth',this)">Wealth</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(91,110,245,0.12)">👥</div>
+        <div><div class="stat-num" id="stat-total">35</div><div class="stat-lbl">Total Contacts</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(34,201,122,0.12)">🏢</div>
+        <div><div class="stat-num" id="stat-pubs">22</div><div class="stat-lbl">Publications</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(245,200,66,0.12)">✉️</div>
+        <div><div class="stat-num" id="stat-emails">33</div><div class="stat-lbl">Email Contacts</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(245,91,142,0.12)">🎯</div>
+        <div><div class="stat-num" id="stat-beats">8</div><div class="stat-lbl">Coverage Angles</div></div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <div class="table-wrap">
+        <div class="table-header-row">
+          <div>
+            <span style="font-size:14px;font-weight:600">All Contacts</span>
+            <span class="contact-count" id="contact-count">35 contacts</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="view-toggle">
+              <button class="view-btn active" id="list-view-btn" onclick="setView('list')" title="List view">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </button>
+              <button class="view-btn" id="grid-view-btn" onclick="setView('grid')" title="Grid view">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TABLE VIEW -->
+        <div id="list-view">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:36px"><input type="checkbox" class="cb" onchange="selectAll(this)"></th>
+                <th onclick="sortBy('name')">Contact <span class="sort-arrow">↕</span></th>
+                <th onclick="sortBy('pub')">Publication <span class="sort-arrow">↕</span></th>
+                <th onclick="sortBy('email')">Email <span class="sort-arrow">↕</span></th>
+                <th>Coverage Angle</th>
+                <th>Status</th>
+                <th style="width:80px"></th>
+              </tr>
+            </thead>
+            <tbody id="contacts-tbody"></tbody>
+          </table>
+          <div class="empty-state" id="empty-state" style="display:none">
+            <div class="icon">🔍</div>
+            <p>No contacts match your filters</p>
+          </div>
+        </div>
+
+        <!-- GRID VIEW -->
+        <div id="card-view">
+          <div class="card-grid" id="contacts-grid"></div>
+          <div class="empty-state" id="empty-state-grid" style="display:none">
+            <div class="icon">🔍</div>
+            <p>No contacts match your filters</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE-IN PANEL -->
+<div class="panel-overlay" id="panel-overlay" onclick="closePanel(event)">
+  <div class="panel" id="contact-panel">
+    <div class="panel-top">
+      <div>
+        <div class="panel-avatar" id="p-avatar"></div>
+        <div class="panel-name" id="p-name"></div>
+        <div class="panel-role" id="p-role"></div>
+        <div class="panel-pub" id="p-pub"></div>
+      </div>
+      <button class="panel-close" onclick="document.getElementById('panel-overlay').classList.remove('open')">✕</button>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">Contact Details</div>
+      <div class="info-row">
+        <span class="info-label">Email</span>
+        <span class="info-value" id="p-email" style="font-family:'JetBrains Mono';font-size:12px;color:var(--accent2)"></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Title</span>
+        <span class="info-value" id="p-title"></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Publication</span>
+        <span class="info-value" id="p-publication"></span>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">Coverage Angles</div>
+      <div class="tag-row" id="p-angles"></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">Outreach Activity</div>
+      <div style="font-size:12px;color:var(--text3);font-style:italic">No outreach recorded yet.</div>
+    </div>
+
+    <div class="panel-actions">
+      <button class="btn btn-primary" style="flex:1" onclick="showToast('📧 Compose email coming soon')">✉ Email</button>
+      <button class="btn btn-ghost" onclick="showToast('📝 Note added')">+ Note</button>
+      <button class="btn btn-ghost" onclick="showToast('📋 Added to list')">Add to List</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const CONTACTS = [
+  { pub: "Alternative Fund Insight", first: "Will", last: "Wainewright", title: "Founder", email: "will@alternativefundinsight.com", angle: "Hedge fund / Enders Capital case study?" },
+  { pub: "Axios", first: "Madison", last: "Mills", title: "Markets Reporter", email: "madison.mills@axios.com", angle: "Wealth / Investing" },
+  { pub: "Barron's", first: "Paul", last: "LaMonica", title: "Senior Markets Analysis Writer", email: "paul.lamonica@barrons.com", angle: "Investing / Wealth" },
+  { pub: "Bloomberg", first: "Dani", last: "Berger", title: "Anchor, Open Interest", email: "dburger7@bloomberg.net", angle: "Quant funds / Investing" },
+  { pub: "Bloomberg", first: "Natalia", last: "Kniazhevich", title: "US Equities Reporter", email: "nkniazhevic3@bloomberg.net", angle: "Markets / Retail investing" },
+  { pub: "Bloomberg", first: "Nishant", last: "Kumar", title: "Chief Correspondent, Hedge Funds", email: "nkumar173@bloomberg.net", angle: "Quant funds / Investing" },
+  { pub: "Bloomberg", first: "Paige", last: "Smith", title: "Consumer Finance Reporter", email: "psmith494@bloomberg.net", angle: "Consumer finance" },
+  { pub: "Business Insider", first: "Jennifer", last: "Sor", title: "Reporter II", email: "jsor@businessinsider.com", angle: "Retail investing" },
+  { pub: "Business Insider", first: "Bradley", last: "Saacks", title: "Finance Correspondent", email: "bsaacks@businessinsider.com", angle: "Hedge fund / Enders Capital case study?" },
+  { pub: "CNBC", first: "Stephanie", last: "Dhue", title: "Senior Field Producer", email: "stephanie.dhue@nbcuni.com", angle: "Retail investing / Policy" },
+  { pub: "CNBC", first: "Hayley", last: "Cuccinello", title: "Wealth Reporter", email: "hayley.cuccinello@nbcuni.com", angle: "Wealth / Investing" },
+  { pub: "CNBC", first: "Alex", last: "Harring", title: "Reporter & Morning Squawk Writer", email: "alex.harring@nbcuni.com", angle: "Markets / Investing" },
+  { pub: "Crain Currency", first: "Jasmine", last: "Suarez", title: "Editor", email: "jasmine.suarez@crain.com", angle: "Investing / Wealth (family offices)" },
+  { pub: "Fortune", first: "Leo", last: "Schwartz", title: "Senior Writer", email: "leo.schwartz@fortune.com", angle: "Fintech" },
+  { pub: "InvestmentNews", first: "Gregg", last: "Greenberg", title: "Retirement Editor and Multimedia Anchor", email: "ggreenberg@investmentnews.com", angle: "Retail investing / Wealth" },
+  { pub: "InvestmentNews", first: "Steve", last: "Randall", title: "Freelance Reporter, Key Media", email: "steve.randall@keymedia.com", angle: "Retail investing / Wealth / Advisors" },
+  { pub: "MarketWatch", first: "Gordon", last: "Gottsegen", title: "Retail Investing Reporter", email: "Gordon.Gottsegen@marketwatch.com", angle: "Retail investing / wealth" },
+  { pub: "MarketWatch", first: "Joseph", last: "Adinolfi", title: "Markets Reporter", email: "joseph.adinolfi@dowjones.com", angle: "Markets / Retail investing" },
+  { pub: "PYMNTS", first: "Karen", last: "Webster", title: "CEO", email: "kwebster@pymnts.com", angle: "AI / Fintech" },
+  { pub: "Reuters", first: "Anirban", last: "Sen", title: "Editor in Charge, US M&A", email: "Anirban.Sen@thomsonreuters.com", angle: "Investing / Fintech" },
+  { pub: "Tech Brew", first: "Patrick", last: "Kulp", title: "AI Reporter", email: "pkulp@morningbrew.com", angle: "AI / Fintech" },
+  { pub: "The Wall Street Journal", first: "Jason", last: "Zweig", title: "Columnist", email: "intelligentinvestor@wsj.com", angle: "Investing / Wealth / Platform overview" },
+  { pub: "The Wall Street Journal", first: "Hannah Erin", last: "Lang", title: "Reporter", email: "hannaherin.lang@wsj.com", angle: "Investing / Wealth / Fintech" },
+  { pub: "The Wall Street Journal", first: "Jack", last: "Pitcher", title: "Reporter", email: "jack.pitcher@wsj.com", angle: "Markets" },
+  { pub: "Venture Beat", first: "Michael", last: "Nunez", title: "AI Reporter", email: "michael.nunez@venturebeat.com", angle: "AI / Fintech" },
+  { pub: "WealthManagement", first: "Alex", last: "Ortolani", title: "Senior Reporter", email: "Alex.Ortolani@informa.com", angle: "Fintech / Wealth Management" },
+  { pub: "Wired", first: "Will", last: "Knight", title: "AI Reporter", email: "will_knight@wired.com", angle: "AI / Fintech" },
+  { pub: "Investing.com", first: "—", last: "", title: "—", email: "—", angle: "—" },
+  { pub: "Investors Business Daily", first: "Ken", last: "Shreve", title: "Economy and Stock Market Reporter", email: "ken.shreve@investors.com", angle: "Markets" },
+  { pub: "Investors Business Daily", first: "Kimberly", last: "Koenig", title: "Markets Reporter", email: "kimberley.koenig@investors.com", angle: "Markets" },
+  { pub: "Kiplinger", first: "Jeff", last: "Reeves", title: "Contributing Writer", email: "kiplinger@futurenet.com", angle: "Retail investing" },
+  { pub: "Kiplinger", first: "Ella", last: "Vincent", title: "Personal Finance Staff Writer", email: "ella.vincent@futurenet.com", angle: "Retail investing" },
+  { pub: "Markets Brew", first: "Lucy", last: "Brewster", title: "Reporter", email: "Lucy.brewster@morningbrew.com", angle: "Retail investing" },
+  { pub: "Traders Magazine", first: "Anna", last: "Lyudvig", title: "Senior Writer", email: "alyudvig@marketsmedia.com", angle: "Investing" },
+  { pub: "Waters Technology", first: "Nyela", last: "Graham", title: "—", email: "—", angle: "—" },
+];
+
+// Color palettes for publications
+const PUB_COLORS = {
+  "Bloomberg": { bg: "rgba(245,136,66,0.12)", border: "rgba(245,136,66,0.4)", text: "#f5884a", dot: "#f5884a" },
+  "The Wall Street Journal": { bg: "rgba(61,214,245,0.1)", border: "rgba(61,214,245,0.35)", text: "#3dd6f5", dot: "#3dd6f5" },
+  "CNBC": { bg: "rgba(91,110,245,0.12)", border: "rgba(91,110,245,0.35)", text: "#7c8fff", dot: "#7c8fff" },
+  "Business Insider": { bg: "rgba(245,91,142,0.1)", border: "rgba(245,91,142,0.35)", text: "#f55b8e", dot: "#f55b8e" },
+  "Reuters": { bg: "rgba(245,200,66,0.1)", border: "rgba(245,200,66,0.35)", text: "#f5c842", dot: "#f5c842" },
+  "MarketWatch": { bg: "rgba(34,201,122,0.1)", border: "rgba(34,201,122,0.35)", text: "#22c97a", dot: "#22c97a" },
+};
+
+const AVATAR_COLORS = [
+  ["#5b6ef5","#8b5cf6"],["#f55b8e","#f5874a"],["#22c97a","#3dd6f5"],
+  ["#f5c842","#f5874a"],["#3dd6f5","#5b6ef5"],["#8b5cf6","#f55b8e"]
+];
+
+function getPubStyle(pub) {
+  return PUB_COLORS[pub] || { bg: "rgba(139,145,168,0.08)", border: "rgba(139,145,168,0.2)", text: "#8b91a8", dot: "#8b91a8" };
+}
+
+function getAvatarGradient(idx) {
+  const c = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+  return `linear-gradient(135deg, ${c[0]}, ${c[1]})`;
+}
+
+function initials(c) {
+  if (!c.first || c.first === "—") return "?";
+  return (c.first[0] + (c.last ? c.last[0] : "")).toUpperCase();
+}
+
+function getAngleTags(angle) {
+  if (!angle || angle === "—") return [];
+  return angle.split(/[\/,]/).map(s => s.trim()).filter(Boolean);
+}
+
+let currentFilters = { pub: "all", beat: "all" };
+let searchTerm = "";
+let currentView = "list";
+let sortField = null, sortAsc = true;
+
+function filteredContacts() {
+  let list = CONTACTS.slice();
+
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    list = list.filter(c =>
+      [c.pub, c.first, c.last, c.title, c.email, c.angle]
+        .join(" ").toLowerCase().includes(q)
+    );
+  }
+
+  if (currentFilters.pub !== "all") {
+    const map = { bloomberg: "Bloomberg", wsj: "The Wall Street Journal", cnbc: "CNBC", bi: "Business Insider" };
+    const target = map[currentFilters.pub];
+    list = list.filter(c => c.pub === target);
+  }
+
+  if (currentFilters.beat !== "all") {
+    const map = { ai: "ai", investing: "invest", wealth: "wealth" };
+    const kw = map[currentFilters.beat];
+    list = list.filter(c => c.angle.toLowerCase().includes(kw));
+  }
+
+  if (sortField) {
+    list.sort((a, b) => {
+      const va = (sortField === "name" ? a.last + a.first : sortField === "pub" ? a.pub : a.email).toLowerCase();
+      const vb = (sortField === "name" ? b.last + b.first : sortField === "pub" ? b.pub : b.email).toLowerCase();
+      return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    });
+  }
+
+  return list;
+}
+
+function render() {
+  const list = filteredContacts();
+  document.getElementById("contact-count").textContent = `${list.length} contact${list.length !== 1 ? "s" : ""}`;
+  document.getElementById("stat-total").textContent = list.length;
+  renderTable(list);
+  renderGrid(list);
+}
+
+function renderTable(list) {
+  const tbody = document.getElementById("contacts-tbody");
+  const empty = document.getElementById("empty-state");
+
+  if (list.length === 0) {
+    tbody.innerHTML = "";
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  tbody.innerHTML = list.map((c, i) => {
+    const ps = getPubStyle(c.pub);
+    const grad = getAvatarGradient(CONTACTS.indexOf(c));
+    const tags = getAngleTags(c.angle).slice(0, 2);
+    const email = c.email && c.email !== "—" ? c.email : "—";
+    return `
+    <tr onclick="openPanel(${CONTACTS.indexOf(c)})">
+      <td onclick="event.stopPropagation()"><input type="checkbox" class="cb"></td>
+      <td>
+        <div class="contact-cell">
+          <div class="contact-avatar" style="background:${grad}">
+            ${initials(c)}
+          </div>
+          <div>
+            <div class="contact-name">${c.first} ${c.last}</div>
+            <div class="contact-title">${c.title || "—"}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="pub-pill" style="background:${ps.bg};border-color:${ps.border};color:${ps.text}">
+          <div class="pub-dot" style="background:${ps.dot}"></div>
+          ${c.pub}
+        </div>
+      </td>
+      <td>
+        ${email !== "—" ? `<a class="email-link" href="mailto:${email}" onclick="event.stopPropagation()">${email}</a>` : `<span style="color:var(--text3)">—</span>`}
+      </td>
+      <td>
+        ${tags.map(t => `<span class="angle-tag">${t}</span>`).join("")}
+      </td>
+      <td>
+        <div class="status-dot">
+          <div class="dot" style="background:${email !== "—" ? "#22c97a" : "#555c73"}"></div>
+          <span style="color:${email !== "—" ? "#22c97a" : "var(--text3)"}; font-size:11px">
+            ${email !== "—" ? "Active" : "Incomplete"}
+          </span>
+        </div>
+      </td>
+      <td>
+        <div class="action-btns">
+          <button class="action-btn" title="Email" onclick="event.stopPropagation();showToast('📧 Email compose coming soon')">✉</button>
+          <button class="action-btn" title="Add to list" onclick="event.stopPropagation();showToast('📋 Added to list')">+</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+function renderGrid(list) {
+  const grid = document.getElementById("contacts-grid");
+  const empty = document.getElementById("empty-state-grid");
+
+  if (list.length === 0) {
+    grid.innerHTML = "";
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  grid.innerHTML = list.map((c) => {
+    const grad = getAvatarGradient(CONTACTS.indexOf(c));
+    const ps = getPubStyle(c.pub);
+    const tags = getAngleTags(c.angle).slice(0, 2);
+    return `
+    <div class="contact-card" onclick="openPanel(${CONTACTS.indexOf(c)})">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="card-avatar" style="background:${grad}">${initials(c)}</div>
+        <div>
+          <div class="card-name">${c.first} ${c.last}</div>
+          <div class="card-title">${c.title || "—"}</div>
+        </div>
+      </div>
+      <div class="pub-pill" style="background:${ps.bg};border-color:${ps.border};color:${ps.text};align-self:flex-start">
+        <div class="pub-dot" style="background:${ps.dot}"></div>
+        ${c.pub}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">
+        ${tags.map(t => `<span class="angle-tag">${t}</span>`).join("")}
+      </div>
+      <div class="card-email">${c.email !== "—" ? c.email : "No email"}</div>
+    </div>`;
+  }).join("");
+}
+
+function openPanel(idx) {
+  const c = CONTACTS[idx];
+  const grad = getAvatarGradient(idx);
+  const ps = getPubStyle(c.pub);
+
+  document.getElementById("p-avatar").style.background = grad;
+  document.getElementById("p-avatar").textContent = initials(c);
+  document.getElementById("p-name").textContent = `${c.first} ${c.last}`;
+  document.getElementById("p-role").textContent = c.title || "—";
+  document.getElementById("p-pub").innerHTML = `<span style="color:${ps.text}">${c.pub}</span>`;
+  document.getElementById("p-email").textContent = c.email !== "—" ? c.email : "Not available";
+  document.getElementById("p-title").textContent = c.title || "—";
+  document.getElementById("p-publication").textContent = c.pub;
+
+  const angles = getAngleTags(c.angle);
+  document.getElementById("p-angles").innerHTML = angles.length
+    ? angles.map(t => `<span class="angle-tag" style="font-size:11px;padding:4px 10px">${t}</span>`).join("")
+    : `<span style="font-size:12px;color:var(--text3)">No angles listed</span>`;
+
+  document.getElementById("panel-overlay").classList.add("open");
+}
+
+function closePanel(e) {
+  if (e.target.id === "panel-overlay") {
+    document.getElementById("panel-overlay").classList.remove("open");
+  }
+}
+
+function setFilter(type, val, el) {
+  currentFilters[type] = val;
+  // deactivate siblings
+  el.parentElement.querySelectorAll(".filter-chip").forEach(c => {
+    if (c.dataset.group === type || !c.dataset.group) {
+      // crude: find chips in same group
+    }
+  });
+  // toggle within same "group" by checking previous/next siblings for matching filter type
+  // simpler: just deactivate all chips near same label
+  let node = el.parentElement.firstChild;
+  let inGroup = false;
+  let passed = false;
+  el.parentElement.querySelectorAll(".filter-chip").forEach(chip => {
+    chip.classList.remove("active");
+  });
+  el.classList.add("active");
+  render();
+}
+
+function filterContacts() {
+  searchTerm = document.getElementById("searchInput").value;
+  render();
+}
+
+function selectAll(cb) {
+  document.querySelectorAll("tbody .cb").forEach(c => c.checked = cb.checked);
+}
+
+function sortBy(field) {
+  if (sortField === field) sortAsc = !sortAsc;
+  else { sortField = field; sortAsc = true; }
+  render();
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById("list-view").style.display = v === "list" ? "block" : "none";
+  document.getElementById("card-view").style.display = v === "grid" ? "block" : "none";
+  document.getElementById("list-view-btn").classList.toggle("active", v === "list");
+  document.getElementById("grid-view-btn").classList.toggle("active", v === "grid");
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2500);
+}
+
+// Init
+render();
+</script>
+</body>
+</html>
