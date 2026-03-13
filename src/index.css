@@ -438,3 +438,133 @@ tbody tr:hover .action-btns { opacity: 1; }
 .card-name { font-size: 14px; font-weight: 700; }
 .card-title { font-size: 11px; color: var(--text3); }
 .card-email { font-size: 10px; font-family: 'JetBrains Mono'; color: var(--text3); margin-top: 4px; word-break: break-all; }
+
+/* ── SOCIAL MEDIA PAGE ── */
+
+.sm-tab-bar {
+  display: flex; align-items: center; gap: 4px;
+  padding: 0 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.sm-tab {
+  display: flex; align-items: center; gap: 7px;
+  padding: 14px 16px;
+  font-family: inherit; font-size: 13px; font-weight: 500;
+  color: var(--text3); background: none; border: none;
+  cursor: pointer; position: relative;
+  transition: color 0.15s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.sm-tab:hover { color: var(--text2); }
+.sm-tab.active {
+  color: var(--accent2);
+  border-bottom-color: var(--accent);
+}
+.sm-tab.soon { cursor: default; opacity: 0.45; }
+.sm-tab.soon:hover { color: var(--text3); }
+
+.sm-tab-soon {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: var(--surface2); border: 1px solid var(--border2);
+  color: var(--text3); border-radius: 4px; padding: 1px 5px;
+}
+
+/* Stats row */
+.sm-stats-row {
+  display: flex; gap: 16px;
+  padding: 20px 0 4px;
+}
+
+.sm-stat-card {
+  flex: 1; min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+.sm-stat-value {
+  font-size: 24px; font-weight: 700;
+  letter-spacing: -0.5px; line-height: 1;
+  margin-bottom: 5px;
+}
+.sm-stat-label { font-size: 12px; font-weight: 600; color: var(--text2); }
+.sm-stat-sub { font-size: 10px; color: var(--text3); margin-top: 3px; }
+
+/* Feed header */
+.sm-feed-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 0 10px;
+}
+
+.sm-sort-toggle { display: flex; gap: 4px; }
+.sm-sort-btn {
+  padding: 6px 12px; border-radius: 6px;
+  font-family: inherit; font-size: 12px; font-weight: 500;
+  background: none; border: 1px solid var(--border2);
+  color: var(--text3); cursor: pointer; transition: all 0.15s;
+}
+.sm-sort-btn:hover { color: var(--text2); border-color: var(--border2); background: var(--surface2); }
+.sm-sort-btn.active {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--accent2);
+}
+
+/* Tweet feed */
+.tweet-feed { display: flex; flex-direction: column; gap: 1px; }
+
+.tweet-card {
+  display: flex; gap: 14px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px; margin-bottom: 8px;
+  transition: border-color 0.15s;
+}
+.tweet-card:hover { border-color: var(--border2); }
+
+.tweet-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tweet-body { flex: 1; min-width: 0; }
+
+.tweet-meta {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap; margin-bottom: 7px;
+}
+.tweet-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.tweet-handle { font-size: 12px; color: var(--text3); font-family: 'JetBrains Mono', monospace; }
+.tweet-time { font-size: 11px; color: var(--text3); margin-left: auto; white-space: nowrap; }
+
+.tweet-pub-badge {
+  font-size: 10px; font-weight: 600;
+  padding: 2px 7px; border-radius: 4px;
+}
+
+.tweet-text {
+  font-size: 13px; line-height: 1.6;
+  color: var(--text2); margin-bottom: 10px;
+}
+
+.tweet-engagement {
+  display: flex; align-items: center; gap: 16px;
+}
+.tweet-eng-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--text3);
+}
+.tweet-eng-item svg { opacity: 0.6; }
+.tweet-eng-total {
+  margin-left: auto;
+  font-size: 11px; color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+}
