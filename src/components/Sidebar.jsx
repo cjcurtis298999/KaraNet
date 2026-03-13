@@ -1,4 +1,4 @@
-export default function Sidebar({ contactCount }) {
+export default function Sidebar({ contactCount, activePage, onNav }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -8,7 +8,10 @@ export default function Sidebar({ contactCount }) {
 
       <div className="sidebar-section">
         <div className="sidebar-label">Workspace</div>
-        <div className="nav-item active">
+        <div
+          className={`nav-item${activePage === 'contacts' ? ' active' : ''}`}
+          onClick={() => onNav('contacts')}
+        >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
             <circle cx="9" cy="7" r="4"/>
@@ -18,13 +21,13 @@ export default function Sidebar({ contactCount }) {
           Contacts
           <span className="nav-badge">{contactCount}</span>
         </div>
-        <div className="nav-item">
+        <div className="nav-item" onClick={() => onNav('outreach')}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.36 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/>
           </svg>
           Outreach
         </div>
-        <div className="nav-item">
+        <div className="nav-item" onClick={() => onNav('campaigns')}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
             <line x1="16" y1="2" x2="16" y2="6"/>
@@ -33,11 +36,24 @@ export default function Sidebar({ contactCount }) {
           </svg>
           Campaigns
         </div>
-        <div className="nav-item">
+        <div className="nav-item" onClick={() => onNav('analytics')}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
           </svg>
           Analytics
+        </div>
+      </div>
+
+      <div className="sidebar-section">
+        <div className="sidebar-label">Analytics</div>
+        <div
+          className={`nav-item${activePage === 'social-media' ? ' active' : ''}`}
+          onClick={() => onNav('social-media')}
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.265 5.632L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+          </svg>
+          Social Media
         </div>
       </div>
 
